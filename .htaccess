@@ -1,0 +1,33 @@
+# Dashboard .htaccess
+
+# Empêcher l'accès direct aux dossiers includes et config
+<FilesMatch "^(config|includes)/">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Activer la réécriture d'URL (optionnel pour futures améliorations)
+# RewriteEngine On
+
+# Désactiver le listage des répertoires
+Options -Indexes
+
+# Gestion des erreurs personnalisées (optionnel)
+# ErrorDocument 404 /dashboard/404.php
+
+# Forcer UTF-8 pour les fichiers texte
+AddDefaultCharset UTF-8
+
+# Compression gzip pour optimiser les performances
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Cache pour les assets statiques
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
