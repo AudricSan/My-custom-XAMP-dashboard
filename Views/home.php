@@ -48,7 +48,7 @@ require __DIR__ . '/../Public/assets/html/header.php';
                 <?php foreach ($virtualhosts as $vh): ?>
                     <li>
                         <?= $icon('fiber_manual_record') ?>
-                        <a href='http://<?= $e($vh['servername']) ?>/' target='_blank'><?= $e($vh['servername']) ?></a>
+                        <a href='http://<?= $e($vh['ip']) ?>/' target='_blank'><?= $e($vh['servername']) ?></a>
                         <span class="vhost-actions">
                             <a href='<?= BASE_URL ?>/vhosts?edit=<?= $e($vh['ip']) ?>' class="vhost-action-btn" title="Éditer">
                                 <?= $icon('edit') ?>
