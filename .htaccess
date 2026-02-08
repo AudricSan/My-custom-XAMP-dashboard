@@ -1,13 +1,12 @@
 # Dashboard .htaccess
 
-# Empêcher l'accès direct aux dossiers includes et config
-<FilesMatch "^(config|includes)/">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
+# Empêcher l'accès direct aux dossiers sensibles
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# Activer la réécriture d'URL (optionnel pour futures améliorations)
-# RewriteEngine On
+    # Empêcher l'accès direct aux dossiers App, src, storage, vendor
+    RewriteRule ^(App|src|storage|vendor)/ - [F,L]
+</IfModule>
 
 # Désactiver le listage des répertoires
 Options -Indexes
