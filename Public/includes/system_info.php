@@ -109,9 +109,20 @@ function getDatabaseInfo() {
     $mariadbPort = '';
 
     if (function_exists('mysqli_connect')) {
-        $mysqli = @mysqli_connect(DB_HOST, DB_USER, DB_PASS);
+        try {
+            $mysqli = mysqli_init();
+            if ($mysqli) {
+                mysqli_options($mysqli, MYSQLI_OPT_CONNECT_TIMEOUT, 2);
+                mysqli_report(MYSQLI_REPORT_OFF);
+                $connected = @mysqli_real_connect($mysqli, DB_HOST, DB_USER, DB_PASS, '', (int)DB_PORT);
+            } else {
+                $connected = false;
+            }
+        } catch (\Exception $e) {
+            $connected = false;
+        }
 
-        if ($mysqli) {
+        if ($connected) {
             $server_info = mysqli_get_server_info($mysqli);
             $host_info = mysqli_get_host_info($mysqli);
             $dbPort = preg_match('/:(\d+)/', $host_info, $matches) ? $matches[1] : DB_PORT;
@@ -127,9 +138,6 @@ function getDatabaseInfo() {
             }
 
             mysqli_close($mysqli);
-        } elseif (function_exists('mysqli_get_client_info')) {
-            $mysqlVersion = mysqli_get_client_info();
-            $mysqlPort = DB_PORT;
         }
     }
 

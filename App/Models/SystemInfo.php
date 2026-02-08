@@ -217,9 +217,20 @@ class SystemInfo
             $dbPass = defined('DB_PASS') ? DB_PASS : '';
             $dbPort = defined('DB_PORT') ? DB_PORT : '3306';
 
-            $mysqli = @mysqli_connect($dbHost, $dbUser, $dbPass);
+            try {
+                $mysqli = mysqli_init();
+                if ($mysqli) {
+                    mysqli_options($mysqli, MYSQLI_OPT_CONNECT_TIMEOUT, 2);
+                    mysqli_report(MYSQLI_REPORT_OFF);
+                    $connected = @mysqli_real_connect($mysqli, $dbHost, $dbUser, $dbPass, '', (int)$dbPort);
+                } else {
+                    $connected = false;
+                }
+            } catch (\Exception $e) {
+                $connected = false;
+            }
 
-            if ($mysqli) {
+            if ($connected) {
                 $server_info = mysqli_get_server_info($mysqli);
                 $host_info = mysqli_get_host_info($mysqli);
                 $port = preg_match('/:(\d+)/', $host_info, $matches) ? $matches[1] : $dbPort;
@@ -235,9 +246,6 @@ class SystemInfo
                 }
 
                 mysqli_close($mysqli);
-            } elseif (function_exists('mysqli_get_client_info')) {
-                $mysqlVersion = mysqli_get_client_info();
-                $mysqlPort = $dbPort;
             }
         }
 
