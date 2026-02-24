@@ -42,7 +42,15 @@ class Functions
      */
     public static function redirect($url)
     {
-        header("Location: $url");
+        $target = $url;
+        // Si l'URL commence par / et que BASE_URL est défini, on le préfixe si BASE_URL n'est pas déjà présent
+        if (defined('BASE_URL') && strpos($url, '/') === 0) {
+            // Éviter de doubler le BASE_URL si déjà présent
+            if (!empty(BASE_URL) && strpos($url, BASE_URL) !== 0) {
+                $target = BASE_URL . $url;
+            }
+        }
+        header("Location: $target");
         exit();
     }
 
